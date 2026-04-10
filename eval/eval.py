@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""
+Evaluate a prompt template against equational theory problems.
+
+Sends each problem to the Modal-hosted gemma-4-31b-it endpoint,
+extracts TRUE/FALSE verdicts using the official judge, and reports accuracy.
+
+Uses streaming to avoid Modal's gateway idle timeout (~60s).
+"""
+
+import argparse
+import asyncio
+import json
+import os
+import sys
+from pathlib import Path
+
+import httpx
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+JUDGE_ROOT = REPO_ROOT / "judge_repo"
+
+sys.path.insert(0, str(JUDGE_ROOT))
+
+from prompt import render_prompt  # noqa: E402
+from judge import judge_response  # noqa: E402
+
+DEFAULT_MODEL_URL = "https://alex-jerpelea--sair-gemma-gemmaserver-serve.modal.run"
+MODEL_ID = "google/gemma-4-31b-it"
+MAX_TOKENS = 2048
+TEMPERATURE = 0.0
+SEED = 0
+CALL_TIMEOUT = 600  # seconds per LLM call
+CONCURRENCY = 1  # sequential to avoid Modal gateway timeout on queued requests
+
+
+def load_problems(path: Path) -> list[dict]:
+    with path.open() as f:
+        return [json.loads(line) for line in f if line.strip()]
+
+
+async def call_model(
+    client: httpx.AsyncClient, url: str, prompt_text: str
+) -> tuple[str, str | None]:
+    """Call the Modal endpoint with streaming to keep the connection alive."""
+    body = {
+        "model": MODEL_ID,
+        "messages": [{"role": "user", "content": prompt_text}],
+        "temperature": TEMPERATURE,
+        "max_tokens": MAX_TOKENS,
+        "seed": SEED,
+        "stream": True,
+    }
+
+    chunks = []
+    finish_reason = None
+
+    async with client.stream(
+        "POST", f"{url}/v1/chat/completions", json=body
+    ) as resp:
+        resp.raise_for_status()
+        async for line in resp.aiter_lines():
+            if not line.startswith("data: "):
+                continue
+            payload = line[len("data: "):]
+            if payload.strip() == "[DONE]":
+                break
+            data = json.loads(payload)
+            delta = data["choices"][0].get("delta", {})
+            if "content" in delta and delta["content"]:
+                chunks.append(delta["content"])
+            fr = data["choices"][0].get("finish_reason")
+            if fr:
+                finish_reason = fr
+
+    return "".join(chunks), finish_reason
+
+
+async def run(args: argparse.Namespace) -> int:
+    url = os.environ.get("SAIR_MODEL_URL", DEFAULT_MODEL_URL).rstrip("/")
+    prompt_template = (REPO_ROOT / "prompt.txt").read_text()
+    problems = load_problems(Path(args.problems))
+
+    total = len(problems)
+    correct = 0
+    no_verdict = 0
+    errors = 0
+    sem = asyncio.Semaphore(CONCURRENCY)
+
+    async def process(i: int, problem: dict) -> dict:
+        pid = problem.get("id", f"#{i}")
+        rendered = render_prompt(
+            prompt_template, problem["equation1"], problem["equation2"]
+        )
+        async with sem:
+            try:
+                text, finish = await call_model(client, url, rendered)
+                result, reason = judge_response(
+                    text, expected_answer=problem["answer"]
+                )
+                if result is True:
+                    st = "CORRECT"
+                elif result is False:
+                    st = "WRONG"
+                else:
+                    st = "NO_VERDICT"
+            except Exception as e:
+                st = f"ERROR: {e}"
+                result = None
+        return {"i": i, "id": pid, "status": st, "expected": problem["answer"], "result": result}
+
+    async with httpx.AsyncClient(timeout=CALL_TIMEOUT) as client:
+        tasks = [process(i, p) for i, p in enumerate(problems, 1)]
+        for coro in asyncio.as_completed(tasks):
+            row = await coro
+            if row["status"] == "CORRECT":
+                correct += 1
+            elif row["status"] == "NO_VERDICT":
+                no_verdict += 1
+            elif row["status"].startswith("ERROR"):
+                errors += 1
+            print(
+                json.dumps(
+                    {"i": row["i"], "id": row["id"], "status": row["status"], "expected": row["expected"]},
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
+
+    accuracy = correct / total if total > 0 else 0.0
+    print("---")
+    print(f"total:      {total}")
+    print(f"correct:    {correct}")
+    print(f"no_verdict: {no_verdict}")
+    print(f"errors:     {errors}")
+    print(f"accuracy:   {accuracy:.4f}")
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--problems",
+        type=str,
+        default=str(REPO_ROOT / "data" / "iter_100.jsonl"),
+        help="Path to JSONL problems file",
+    )
+    args = parser.parse_args()
+    return asyncio.run(run(args))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
