@@ -37,4 +37,41 @@ else
     echo "Full dataset already downloaded."
 fi
 
+# Build the SAIR-style public smoke split from the hard3 subset.
+if [ ! -f "data/sair_smoke_20.jsonl" ]; then
+    echo "Building SAIR smoke split..."
+    python -c "
+import json
+
+true_count = 0
+false_count = 0
+rows = []
+
+with open('data/all_problems.jsonl') as src:
+    for line in src:
+        row = json.loads(line)
+        if not row['id'].startswith('hard3_'):
+            continue
+        if row['answer'] and true_count < 10:
+            rows.append(row)
+            true_count += 1
+        elif (not row['answer']) and false_count < 10:
+            rows.append(row)
+            false_count += 1
+        if true_count >= 10 and false_count >= 10:
+            break
+
+if true_count < 10 or false_count < 10:
+    raise RuntimeError('Could not derive the SAIR smoke split from hard3')
+
+with open('data/sair_smoke_20.jsonl', 'w') as dst:
+    for row in rows:
+        dst.write(json.dumps(row, ensure_ascii=False) + '\n')
+
+print('Wrote data/sair_smoke_20.jsonl')
+"
+else
+    echo "SAIR smoke split already built."
+fi
+
 echo "Done. Ready to evaluate."

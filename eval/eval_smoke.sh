@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 cd "$(dirname "$0")/.."
-python eval/eval.py --preset sair-public
+python eval/eval.py --preset sair-smoke
