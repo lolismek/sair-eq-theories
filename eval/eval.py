@@ -2,10 +2,14 @@
 """
 Evaluate a prompt template against equational theory problems.
 
-Sends each problem to the Modal-hosted gemma-4-31b-it endpoint,
-extracts TRUE/FALSE verdicts using the official judge, and reports accuracy.
+Sends each problem to the vLLM endpoint, extracts TRUE/FALSE verdicts
+using the official judge, and reports accuracy.
 
-Uses streaming to avoid Modal's gateway idle timeout (~60s).
+Env vars:
+    SAIR_MODEL_URL    — base URL of the vLLM server (required)
+    SAIR_API_KEY      — bearer token for the vLLM server (required)
+    SAIR_STREAM       — optional: 1/true to force streaming, 0/false to disable
+    SAIR_CONCURRENCY  — optional: override request concurrency
 """
 
 import argparse
@@ -25,13 +29,42 @@ sys.path.insert(0, str(JUDGE_ROOT))
 from prompt import render_prompt  # noqa: E402
 from judge import judge_response  # noqa: E402
 
-DEFAULT_MODEL_URL = "https://alex-jerpelea--sair-gemma-gemmaserver-serve.modal.run"
 MODEL_ID = "google/gemma-4-31b-it"
-MAX_TOKENS = 2048
+MAX_TOKENS = 8192
 TEMPERATURE = 0.0
 SEED = 0
 CALL_TIMEOUT = 600  # seconds per LLM call
-CONCURRENCY = 1  # sequential to avoid Modal gateway timeout on queued requests
+
+
+def _looks_like_modal_url(url: str) -> bool:
+    return ".modal.run" in url or ".modal.site" in url
+
+
+def _env_truthy(name: str) -> bool | None:
+    value = os.environ.get(name)
+    if value is None:
+        return None
+    value = value.strip().lower()
+    if value in {"1", "true", "yes", "on"}:
+        return True
+    if value in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError(f"{name} must be one of 1/0/true/false/yes/no/on/off")
+
+
+def should_stream(url: str) -> bool:
+    forced = _env_truthy("SAIR_STREAM")
+    if forced is not None:
+        return forced
+    # Modal benefits from streaming because long non-streaming responses can idle out.
+    return _looks_like_modal_url(url)
+
+
+def resolve_concurrency(url: str, use_stream: bool) -> int:
+    override = os.environ.get("SAIR_CONCURRENCY")
+    if override:
+        return max(1, int(override))
+    return 1 if use_stream and _looks_like_modal_url(url) else 3
 
 
 def load_problems(path: Path) -> list[dict]:
@@ -40,44 +73,60 @@ def load_problems(path: Path) -> list[dict]:
 
 
 async def call_model(
-    client: httpx.AsyncClient, url: str, prompt_text: str
+    client: httpx.AsyncClient, url: str, prompt_text: str, use_stream: bool
 ) -> tuple[str, str | None]:
-    """Call the Modal endpoint with streaming to keep the connection alive."""
+    """Call the vLLM endpoint, optionally via streaming SSE."""
     body = {
         "model": MODEL_ID,
         "messages": [{"role": "user", "content": prompt_text}],
         "temperature": TEMPERATURE,
         "max_tokens": MAX_TOKENS,
         "seed": SEED,
-        "stream": True,
     }
 
-    chunks = []
-    finish_reason = None
+    if use_stream:
+        body["stream"] = True
+        chunks = []
+        finish_reason = None
 
-    async with client.stream(
-        "POST", f"{url}/v1/chat/completions", json=body
-    ) as resp:
-        resp.raise_for_status()
-        async for line in resp.aiter_lines():
-            if not line.startswith("data: "):
-                continue
-            payload = line[len("data: "):]
-            if payload.strip() == "[DONE]":
-                break
-            data = json.loads(payload)
-            delta = data["choices"][0].get("delta", {})
-            if "content" in delta and delta["content"]:
-                chunks.append(delta["content"])
-            fr = data["choices"][0].get("finish_reason")
-            if fr:
-                finish_reason = fr
+        async with client.stream("POST", f"{url}/v1/chat/completions", json=body) as resp:
+            resp.raise_for_status()
+            async for line in resp.aiter_lines():
+                if not line.startswith("data: "):
+                    continue
+                payload = line[len("data: ") :]
+                if payload.strip() == "[DONE]":
+                    break
+                data = json.loads(payload)
+                choice = data["choices"][0]
+                delta = choice.get("delta", {})
+                if delta.get("content"):
+                    chunks.append(delta["content"])
+                if choice.get("finish_reason"):
+                    finish_reason = choice["finish_reason"]
+        return "".join(chunks), finish_reason
 
-    return "".join(chunks), finish_reason
+    resp = await client.post(f"{url}/v1/chat/completions", json=body)
+    resp.raise_for_status()
+    data = resp.json()
+    choice = data["choices"][0]
+    return choice["message"]["content"], choice.get("finish_reason")
 
 
 async def run(args: argparse.Namespace) -> int:
-    url = os.environ.get("SAIR_MODEL_URL", DEFAULT_MODEL_URL).rstrip("/")
+    url = os.environ.get("SAIR_MODEL_URL", "").rstrip("/")
+    api_key = os.environ.get("SAIR_API_KEY", "")
+
+    if not url:
+        print("Error: SAIR_MODEL_URL env var must be set", file=sys.stderr)
+        return 1
+    if not api_key:
+        print("Error: SAIR_API_KEY env var must be set", file=sys.stderr)
+        return 1
+
+    use_stream = should_stream(url)
+    concurrency = resolve_concurrency(url, use_stream)
+    headers = {"Authorization": f"Bearer {api_key}"}
     prompt_template = (REPO_ROOT / "prompt.txt").read_text()
     problems = load_problems(Path(args.problems))
 
@@ -85,7 +134,7 @@ async def run(args: argparse.Namespace) -> int:
     correct = 0
     no_verdict = 0
     errors = 0
-    sem = asyncio.Semaphore(CONCURRENCY)
+    sem = asyncio.Semaphore(concurrency)
 
     async def process(i: int, problem: dict) -> dict:
         pid = problem.get("id", f"#{i}")
@@ -94,7 +143,7 @@ async def run(args: argparse.Namespace) -> int:
         )
         async with sem:
             try:
-                text, finish = await call_model(client, url, rendered)
+                text, finish = await call_model(client, url, rendered, use_stream)
                 result, reason = judge_response(
                     text, expected_answer=problem["answer"]
                 )
@@ -109,7 +158,18 @@ async def run(args: argparse.Namespace) -> int:
                 result = None
         return {"i": i, "id": pid, "status": st, "expected": problem["answer"], "result": result}
 
-    async with httpx.AsyncClient(timeout=CALL_TIMEOUT) as client:
+    print(
+        json.dumps(
+            {
+                "streaming": use_stream,
+                "concurrency": concurrency,
+                "url": url,
+            }
+        ),
+        flush=True,
+    )
+
+    async with httpx.AsyncClient(timeout=CALL_TIMEOUT, headers=headers) as client:
         tasks = [process(i, p) for i, p in enumerate(problems, 1)]
         for coro in asyncio.as_completed(tasks):
             row = await coro
