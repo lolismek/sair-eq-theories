@@ -4,11 +4,12 @@ Evaluate a prompt template against equational theory problems.
 
 This evaluator supports two practical tracks:
 
-1. `fast` — 100 fixed public problems for inner-loop prompt iteration
-2. `sair-public` — all 1,869 public problems under SAIR-like Gemma settings
+1. `fast` — 100 fixed stratified public problems for the canonical Hive loop
+2. `sair-public` — all 1,669 official public selected problems under SAIR-like
+   Gemma settings for occasional manual audits
 
-It also supports `sair-smoke`, which mirrors the official public 20-problem
-hard3 smoke-test semantics.
+It also supports `sair-smoke`, which is a tiny balanced hard3 smoke split for
+parser / infra checks.
 
 Env vars:
     SAIR_MODEL_URL    — base URL of the vLLM server (required)
@@ -37,12 +38,10 @@ from prompt import render_prompt  # noqa: E402
 from judge import judge_response  # noqa: E402
 
 MODEL_ID = "google/gemma-4-31b-it"
-# SAIR's official local Gemma config uses a 16384 output-token cap as of
-# 2026-04-13. Self-hosted vLLM rejects that exact value when the prompt is
-# non-empty because prompt tokens and output tokens must share the same
-# 16384-token context window, so we clamp slightly for compatibility.
-OFFICIAL_MAX_TOKENS_CAP = 16384
-REQUEST_MAX_TOKENS = 16000
+# SAIR's official Stage 1 evaluation config uses an 8192 output-token cap as
+# of 2026-04-13.
+OFFICIAL_MAX_TOKENS_CAP = 8192
+REQUEST_MAX_TOKENS = 8192
 TEMPERATURE = 0.0
 SEED = 0
 CALL_TIMEOUT = 600  # seconds per direct LLM call
@@ -56,19 +55,27 @@ READY_TIMEOUT = 60 * 15
 READY_POLL_SECONDS = 5
 BATCH_CONNECT_RETRIES = 3
 BATCH_POLL_SECONDS = 5
+PROMPT_SIZE_CAP_BYTES = 10 * 1024
+
+OFFICIAL_PUBLIC_SUBSET_COUNTS = {
+    "normal": 1000,
+    "hard1": 69,
+    "hard2": 200,
+    "hard3": 400,
+}
 
 PRESETS = {
     "fast": {
         "path": REPO_ROOT / "data" / "iter_100.jsonl",
-        "description": "100 fixed iteration problems (50 normal + 50 hard3)",
+        "description": "100 fixed stratified iteration problems sampled from the official public set",
     },
     "sair-public": {
         "path": REPO_ROOT / "data" / "all_problems.jsonl",
-        "description": "1,869 public problems under Gemma-only SAIR-like settings",
+        "description": "1,669 official public selected problems under Gemma-only SAIR-like settings",
     },
     "sair-smoke": {
-        "path": REPO_ROOT / "data" / "sair_smoke_20.jsonl",
-        "description": "20 hard3 public smoke problems using official SAIR semantics",
+        "path": REPO_ROOT / "data" / "sair_smoke_6.jsonl",
+        "description": "6 hard3 smoke problems (3 TRUE + 3 FALSE) for parser / infra checks",
     },
 }
 
@@ -129,34 +136,88 @@ def load_problems(path: Path) -> list[dict]:
         return [json.loads(line) for line in f if line.strip()]
 
 
-def derive_sair_smoke_problems(all_problems: list[dict]) -> list[dict]:
-    """Derive the official public smoke split from the full public dataset.
+def infer_public_subset(problem: dict) -> str | None:
+    problem_id = str(problem.get("id", ""))
+    for subset in OFFICIAL_PUBLIC_SUBSET_COUNTS:
+        if problem_id.startswith(f"{subset}_"):
+            return subset
+    return None
 
-    SAIR's smoke set is the first 10 TRUE and first 10 FALSE problems from the
+
+def normalize_sair_public_problems(
+    problems: list[dict], source_label: str
+) -> list[dict]:
+    filtered = [problem for problem in problems if infer_public_subset(problem) is not None]
+    if len(filtered) != len(problems):
+        raise RuntimeError(
+            f"{source_label} contains non-official or stale rows. "
+            "Run `bash prepare.sh` to refresh the public selected dataset."
+        )
+
+    counts = {subset: 0 for subset in OFFICIAL_PUBLIC_SUBSET_COUNTS}
+    for problem in filtered:
+        subset = infer_public_subset(problem)
+        assert subset is not None
+        counts[subset] += 1
+
+    if counts != OFFICIAL_PUBLIC_SUBSET_COUNTS:
+        raise RuntimeError(
+            "The public selected dataset in "
+            f"{source_label} does not match official SAIR Stage 1 counts. "
+            f"Expected {OFFICIAL_PUBLIC_SUBSET_COUNTS}, got {counts}. "
+            "Run `bash prepare.sh` to refresh the dataset."
+        )
+
+    return filtered
+
+
+def validate_prompt_template(prompt_text: str, prompt_path: Path) -> None:
+    encoded = prompt_text.encode("utf-8")
+    if len(encoded) > PROMPT_SIZE_CAP_BYTES:
+        raise ValueError(
+            f"{prompt_path} is {len(encoded)} bytes, above the SAIR Stage 1 "
+            f"10KB cap ({PROMPT_SIZE_CAP_BYTES} bytes)."
+        )
+
+    eq1_ok = "{{equation1}}" in prompt_text or "{{ equation1 }}" in prompt_text
+    eq2_ok = "{{equation2}}" in prompt_text or "{{ equation2 }}" in prompt_text
+    if not eq1_ok or not eq2_ok:
+        raise ValueError(
+            f"{prompt_path} must include both equation placeholders: "
+            "`{{equation1}}` / `{{ equation1 }}` and "
+            "`{{equation2}}` / `{{ equation2 }}`."
+        )
+
+
+def derive_sair_smoke_problems(all_problems: list[dict]) -> list[dict]:
+    """Derive the tiny hard3 smoke split from the full public dataset.
+
+    The smoke set is the first 3 TRUE and first 3 FALSE problems from the
     hard3 subset, preserving original order.
     """
     selected = []
     true_count = 0
     false_count = 0
+    target_per_label = 3
 
     for problem in all_problems:
         if not str(problem.get("id", "")).startswith("hard3_"):
             continue
 
         answer = bool(problem["answer"])
-        if answer and true_count < 10:
+        if answer and true_count < target_per_label:
             selected.append(problem)
             true_count += 1
-        elif not answer and false_count < 10:
+        elif not answer and false_count < target_per_label:
             selected.append(problem)
             false_count += 1
 
-        if true_count >= 10 and false_count >= 10:
+        if true_count >= target_per_label and false_count >= target_per_label:
             break
 
-    if true_count < 10 or false_count < 10:
+    if true_count < target_per_label or false_count < target_per_label:
         raise RuntimeError(
-            "Unable to derive SAIR smoke problems from data/all_problems.jsonl"
+            "Unable to derive smoke problems from data/all_problems.jsonl"
         )
 
     return selected
@@ -173,16 +234,23 @@ def resolve_problem_set(
     preset_info = PRESETS[preset]
     path = preset_info["path"]
     if path.exists():
-        return load_problems(path), preset, str(path)
+        problems = load_problems(path)
+        if preset == "sair-public":
+            problems = normalize_sair_public_problems(problems, str(path))
+        return problems, preset, str(path)
 
     if preset == "sair-smoke":
         fallback_path = PRESETS["sair-public"]["path"]
         if not fallback_path.exists():
             raise FileNotFoundError(
-                "Missing data/sair_smoke_20.jsonl and data/all_problems.jsonl"
+                "Missing data/sair_smoke_6.jsonl and data/all_problems.jsonl"
             )
+        all_problems = normalize_sair_public_problems(
+            load_problems(fallback_path),
+            str(fallback_path),
+        )
         return (
-            derive_sair_smoke_problems(load_problems(fallback_path)),
+            derive_sair_smoke_problems(all_problems),
             preset,
             f"{path} (derived from {fallback_path})",
         )
@@ -363,6 +431,11 @@ async def run(args: argparse.Namespace) -> int:
     await wait_until_ready(url, headers)
     prompt_path = Path(args.prompt_file)
     prompt_template = prompt_path.read_text()
+    try:
+        validate_prompt_template(prompt_template, prompt_path)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
     problems, preset_name, problems_label = resolve_problem_set(
         preset=args.preset,
         problems_override=args.problems,
@@ -389,6 +462,8 @@ async def run(args: argparse.Namespace) -> int:
                 "official_max_tokens_cap": OFFICIAL_MAX_TOKENS_CAP,
                 "request_max_tokens": REQUEST_MAX_TOKENS,
                 "seed": SEED,
+                "prompt_size_bytes": len(prompt_template.encode("utf-8")),
+                "prompt_size_cap_bytes": PROMPT_SIZE_CAP_BYTES,
             }
         ),
         flush=True,
