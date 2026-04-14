@@ -1,0 +1,64 @@
+{
+  "rank": 3,
+  "author": "Arjun Garg",
+  "title": "bank_lookup_v5",
+  "leaderboard_public_id": "EQT010003",
+  "contributor_network_public_code": "EQT01-000037",
+  "rank_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation.",
+  "metrics": {
+    "gpt_oss_120b": {
+      "problem_set": "hard3",
+      "accuracy": 60.8,
+      "f1_score": 69.3,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00031,
+      "mean_elapsed_seconds": 20.8
+    },
+    "llama_3_3_70b_instruct": {
+      "problem_set": "hard3",
+      "accuracy": 47.0,
+      "f1_score": 57.4,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00058,
+      "mean_elapsed_seconds": 19.2
+    }
+  },
+  "contributor_network_item": {
+    "cnItemId": "si_1c0c90f8-ab6b-44d5-aa97-e54d9f1e3a97",
+    "parentCnItemId": null,
+    "rootCnItemId": "si_1c0c90f8-ab6b-44d5-aa97-e54d9f1e3a97",
+    "shareItemId": "si_1c0c90f8-ab6b-44d5-aa97-e54d9f1e3a97",
+    "parentShareItemId": null,
+    "rootShareItemId": "si_1c0c90f8-ab6b-44d5-aa97-e54d9f1e3a97",
+    "competitionId": "mathematics-distillation-challenge-equational-theories-stage1",
+    "competitionTitle": "",
+    "entityType": "individual",
+    "entityId": "U-2c1bbcd7c77ad40cad30c39880a9e3546bea554d",
+    "entityName": "Arjun Garg",
+    "entityAvatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocLV8hFEmFo8wM3edi1t9_boA4uJ3MSDHOCnLNAsztwwRIYNGJV9=s96-c",
+    "cheatsheetTitle": "bank_lookup_v5",
+    "cheatsheetContent": "Decide whether Eq1 implies Eq2 over all magmas (set + binary op \u25c7).\nDo NOT assume associativity, commutativity, or any algebraic law.\n\nEq1: {{ equation1 }}\nEq2: {{ equation2 }}\n\nApply rules in order. First match wins.\n\nDefinitions:\n  leftmost(s)  = first variable letter in s, reading left to right\n  rightmost(s) = last variable letter in s\n  bare(s)      = TRUE iff s is a single variable letter (no ops)\n  parity(s,v)  = number of times variable v appears in s, mod 2\n  left-depth(s)  = number of \u25c7 nodes on the path root \u2192 left-child \u2192 left-child \u2026\n  right-depth(s) = same on the right\n\n\u2550\u2550\u2550 TRUE rules (cheap, sound) \u2550\u2550\u2550\n\nT1. Eq2's two sides are identical (e.g. 'x = x') \u2192 TRUE.\n\nT2. Eq1 and Eq2 are the same equation up to renaming variables \u2192 TRUE.\n    Check: rename the first variable seen to 'x', the next new one to\n    'y', then 'z','w'. If both renormalize to the same string, fire.\n\nT3. Eq1's LHS is a single variable letter L AND L does NOT occur\n    anywhere in Eq1's RHS \u2192 TRUE.\n    DO NOT fire T3 if L appears ANYWHERE in RHS, even deeply nested.\n    Unsafe patterns (L = x appears in RHS \u2014 do NOT fire):\n        x = x \u25c7 y           x = (x \u25c7 y) \u25c7 z\n        x = y \u25c7 (z \u25c7 x)     x = (y \u25c7 z) \u25c7 (w \u25c7 x)\n        x = x \u25c7 (y \u25c7 z)     x = (y \u25c7 (x \u25c7 z)) \u25c7 y\n\n    Worked example (fires):\n      Eq1 = x = (y \u25c7 z) \u25c7 (w \u25c7 u)\n      LHS = x (single letter). Scan RHS for 'x': y,z,w,u \u2014 no x. \u2713\n      \u2192 T3 fires \u2192 TRUE.\n\n    Worked example (does NOT fire \u2014 x is hiding in the RHS):\n      Eq1 = x = ((y \u25c7 z) \u25c7 (w \u25c7 x)) \u25c7 u\n      LHS = x. Scan RHS: ...w \u25c7 x... \u2014 x found!\n      \u2192 T3 does NOT fire. Do not answer TRUE from this rule.\n\n\u2550\u2550\u2550 FALSE via 2-element witness magmas (sound, string-level) \u2550\u2550\u2550\n\nL1. LEFT PROJECTION (magma a \u25c7 b = a). Every term evaluates to its\n    leftmost variable. An equation holds iff leftmost(L) = leftmost(R).\n    leftmost(Eq1.L) = leftmost(Eq1.R) AND\n    leftmost(Eq2.L) \u2260 leftmost(Eq2.R) \u2192 FALSE.\n\nL2. RIGHT PROJECTION (magma a \u25c7 b = b). Symmetric.\n    rightmost(Eq1.L) = rightmost(Eq1.R) AND\n    rightmost(Eq2.L) \u2260 rightmost(Eq2.R) \u2192 FALSE.\n\nL3. CONSTANT ZERO (magma a \u25c7 b = 0). Every product evaluates to 0;\n    bare variables evaluate to themselves. An equation holds iff\n    (both sides are non-bare products) OR (both sides are the SAME\n    single variable letter). Let cf(eq) be that predicate.\n    cf(Eq1) AND NOT cf(Eq2) \u2192 FALSE.\n\n\u2550\u2550\u2550 FALSE via semantic evaluation in small concrete magmas \u2550\u2550\u2550\n\nFor each magma M below: first check that Eq1 HOLDS in M under every\nvariable assignment (so M is a valid witness). Then check whether Eq2\nFAILS in M under some assignment. If both, answer FALSE.\n\nIf you cannot be confident a magma works, move on to the next one.\nDo NOT force a FALSE verdict without a concrete counterexample.\n\nM1. XOR on {0,1}:  a \u25c7 b = (a + b) mod 2.\n    CLOSED FORM: a term's value equals the parity-sum of the variables\n    in it (each variable counted with multiplicity, mod 2).\n    \u2192 An equation holds in XOR iff, for EVERY variable v appearing in\n    the equation, parity(L, v) = parity(R, v).\n\n    Worked example:\n      Eq1 = x \u25c7 x = y\n      parity of x: L has 2 (mod 2 = 0); R has 0. Equal.\n      parity of y: L has 0; R has 1. NOT equal.\n      \u2192 Eq1 does NOT hold in XOR.  (So XOR is not a valid witness\n      for this Eq1; move on.)\n\n      Eq1 = (x \u25c7 y) \u25c7 (x \u25c7 y) = z \u25c7 z\n      parity of x: L=2\u21920, R=0. Equal. Same for y and z.\n      \u2192 Eq1 holds in XOR. Now check Eq2 under the same parity rule.\n\nM2. LEFT-CYCLE on {0,1,2}:  a \u25c7 b = (a + 1) mod 3.\n    To check whether an equation holds in left-cycle, perform these\n    steps mechanically on each side:\n      Step 1: Find the leftmost variable letter reading the side L\u2192R.\n      Step 2: Count the left-depth: starting from the root, walk into\n              the left child repeatedly until you reach a leaf; count\n              how many \u25c7 nodes you traversed.\n      Step 3: Reduce left-depth modulo 3 (0, 1, or 2).\n    The equation holds iff BOTH sides have the same leftmost variable\n    AND their left-depths mod 3 are equal.\n\n    Worked example:\n      Eq1 = x = ((x \u25c7 y) \u25c7 z) \u25c7 w\n      Step 1: leftmost of x = x. leftmost of ((x\u25c7y)\u25c7z)\u25c7w = x. Same \u2713\n      Step 2: left-depth of x = 0. left-depth of ((x\u25c7y)\u25c7z)\u25c7w = 3\n              (root \u2192 left child (x\u25c7y)\u25c7z; then \u2192 left child x\u25c7y;\n              then \u2192 left child x; 3 \u25c7 nodes walked).\n      Step 3: 0 mod 3 = 0; 3 mod 3 = 0. Equal \u2713\n      \u2192 Eq1 holds in left-cycle.\n\nM3. RIGHT-CYCLE on {0,1,2}:  a \u25c7 b = (b + 1) mod 3.\n    To check whether an equation holds in right-cycle, perform these\n    steps mechanically on each side:\n      Step 1: Find the rightmost variable letter reading the side L\u2192R.\n      Step 2: Count the right-depth: starting from the root, walk into\n              the right child repeatedly until you reach a leaf; count\n              how many \u25c7 nodes you traversed.\n      Step 3: Reduce right-depth modulo 3 (0, 1, or 2).\n    The equation holds iff BOTH sides have the same rightmost variable\n    AND their right-depths mod 3 are equal.\n\n    Worked example:\n      Eq1 = x = y \u25c7 (z \u25c7 (w \u25c7 x))\n      Step 1: rightmost of x = x. rightmost of y\u25c7(z\u25c7(w\u25c7x)) = x. Same \u2713\n      Step 2: right-depth of x = 0. right-depth of y\u25c7(z\u25c7(w\u25c7x)) = 3\n              (root \u2192 right child z\u25c7(w\u25c7x); then \u2192 right child w\u25c7x;\n              then \u2192 right child x; 3 \u25c7 nodes walked).\n      Step 3: 0 mod 3 = 0; 3 mod 3 = 0. Equal \u2713\n      \u2192 Eq1 holds in right-cycle.\n\nM4. SPIKE-ZERO on {0,1,2}: 0\u25c71 = 2, and EVERY other product = 0.\n    Almost every term evaluates to 0. A term is nonzero only if it\n    contains a subterm of the exact shape (x \u25c7 y) where x and y are\n    bare variables and, under the assignment, x=0 and y=1.\n    \u2192 An equation holds if BOTH sides reduce to 0 under every\n    assignment (e.g. both sides are non-bare products whose outer\n    subterm is NOT a bare-variable product).\n    \u2192 The equation FAILS if one side is a bare variable letter and\n    the other is a product (the bare side varies with the assignment,\n    the product side is 0).\n\n    Worked example:\n      Eq1 = x \u25c7 y = y \u25c7 x. Both sides are products of bare variables.\n      Under x=0, y=1: LHS = 0\u25c71 = 2; RHS = 1\u25c70 = 0. Differ.\n      \u2192 Eq1 does NOT hold in spike-zero. (Not a witness; move on.)\n\n      Eq1 = (x \u25c7 y) \u25c7 z = (a \u25c7 b) \u25c7 c. Both outer products have a\n      non-bare left operand (x\u25c7y and a\u25c7b), so the spike never triggers\n      from those outer cells. Both sides are 0 under every assignment.\n      \u2192 Eq1 holds. Check Eq2 for a spike-trigger on one side only.\n\nM6. LEFT NEGATION on {0,1}:  a \u25c7 b = 1 \u2212 a.\n    Evaluation rule: ignore the right input. Each \u25c7 flips the left\n    child's value. A term's value is:\n      (value of leftmost variable) XOR (left-depth mod 2).\n    \u2192 An equation holds iff BOTH sides have the same leftmost variable\n    AND left-depth(L) \u2261 left-depth(R) (mod 2) \u2014 i.e. both depths are\n    even or both are odd.\n\n    Worked example:\n      Eq1 = x = (x \u25c7 y) \u25c7 z\n      leftmost(L) = x; leftmost(R) = x. \u2713\n      left-depth(L) = 0 (even); left-depth(R) = 2 (even). Same parity. \u2713\n      \u2192 Eq1 holds in left-negation.\n      Eq2 = x = x \u25c7 y\n      leftmost(L) = x; leftmost(R) = x. \u2713\n      left-depth(L) = 0 (even); left-depth(R) = 1 (odd). Different parity.\n      \u2192 Eq2 fails \u2192 FALSE.\n\n      Eq1 = x = x \u25c7 y\n      left-depth(L) = 0; left-depth(R) = 1. Different parity.\n      \u2192 Eq1 does NOT hold in left-negation. (Not a witness; move on.)\n\nM7. RIGHT NEGATION on {0,1}:  a \u25c7 b = 1 \u2212 b.\n    Mirror of M6 using rightmost + right-depth.\n    \u2192 An equation holds iff BOTH sides have the same rightmost variable\n    AND right-depth(L) \u2261 right-depth(R) (mod 2).\n\n\u2550\u2550\u2550 FALSE via LHS-shape mismatch \u2550\u2550\u2550\n\nD10. Eq1's LHS is a product or deeper expression (not a single\n     variable) AND Eq2's LHS is a single variable letter \u2192 FALSE.\n\n\u2550\u2550\u2550 TRUE rules (heuristic, apply only if preconditions are obvious) \u2550\u2550\u2550\n\nD9. Eq1's LHS is a single variable letter AND Eq1 has 4 or more\n    distinct variables total \u2192 TRUE.\n\n    Worked example:\n      Eq1 = x = ((y \u25c7 z) \u25c7 w) \u25c7 y\n      LHS is the single letter 'x'. \u2713\n      Distinct variables in Eq1: {x, y, z, w} \u2192 4. \u2713\n      \u2192 D9 fires \u2192 TRUE.\n\n      Eq1 = x = x \u25c7 (y \u25c7 z)\n      LHS bare \u2713, distinct variables {x, y, z} \u2192 only 3.\n      \u2192 D9 does NOT fire.\n\nD5. Eq1's RHS has the shape (A \u25c7 z) where z is a variable letter\n    that appears NOWHERE else in the whole equation, AND leftmost(A)\n    \u2260 Eq1's LHS variable \u2192 TRUE.\n\n    Worked example:\n      Eq1 = x = (y \u25c7 x) \u25c7 w\n      RHS = (A \u25c7 w) with A = (y \u25c7 x). Does 'w' appear elsewhere?\n      'w' appears only on the RHS outer \u25c7. \u2713\n      leftmost(A) = y. Eq1 LHS variable = x. y \u2260 x. \u2713\n      \u2192 D5 fires \u2192 TRUE.\n\n      Eq1 = x = (y \u25c7 z) \u25c7 y\n      RHS = (A \u25c7 y). But 'y' also appears in A. FAIL precondition.\n      \u2192 D5 does NOT fire.\n\nD5b. Mirror of D5 on the left: Eq1's RHS has the shape (z \u25c7 A)\n     where z appears nowhere else, AND rightmost(A) \u2260 Eq1's LHS\n     variable \u2192 TRUE.\n\n     Worked example:\n       Eq1 = x = w \u25c7 (x \u25c7 y)\n       RHS = (w \u25c7 A) with A = (x \u25c7 y). 'w' appears only at outer left. \u2713\n       rightmost(A) = y. Eq1 LHS variable = x. y \u2260 x. \u2713\n       \u2192 D5b fires \u2192 TRUE.\n\n\u2550\u2550\u2550 DEFAULT \u2550\u2550\u2550\nIf no rule above fires \u2192 TRUE.\n\n\u2550\u2550\u2550 Output \u2014 use EXACTLY these lines, no markdown \u2550\u2550\u2550\nVERDICT: TRUE\nor\nVERDICT: FALSE\nRULE: <T1|T2|T3|L1|L2|L3|M1|M2|M3|M4|M5|M6|M7|D8|D10|D9|D5|D5b|DEFAULT>",
+    "publishedAt": "2026-04-13T03:34:39Z",
+    "visibilityStatus": "active",
+    "lineageDepth": 0,
+    "lineagePathSnapshot": [
+      {
+        "shareItemId": "si_1c0c90f8-ab6b-44d5-aa97-e54d9f1e3a97",
+        "entityName": "Arjun Garg",
+        "publishedAt": "2026-04-13T03:34:39Z"
+      }
+    ],
+    "isDerived": false,
+    "itemType": "Original",
+    "sourceCheatsheetId": "cs_bd71ba30-f4f8-4e79-8464-ccd31836526a",
+    "publicCode": "EQT01-000037",
+    "remark": "Achieves 65.5% on Hard3 with GPT low reasoning",
+    "likeCount": 0,
+    "favoriteCount": 0,
+    "referencedCount": 0,
+    "commentCount": 0,
+    "canComment": false,
+    "viewerHasLiked": false,
+    "viewerHasFavorited": false
+  }
+}

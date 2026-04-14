@@ -1,0 +1,65 @@
+{
+  "rank": 17,
+  "author": "owen",
+  "title": "normalize-then-derive",
+  "leaderboard_public_id": "EQT01-000002",
+  "contributor_network_public_code": "EQT01-000002",
+  "rank_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation.",
+  "metrics": {
+    "gpt_oss_120b": {
+      "problem_set": "hard3",
+      "accuracy": 52.3,
+      "f1_score": 6.8,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00024,
+      "mean_elapsed_seconds": 13.7
+    },
+    "llama_3_3_70b_instruct": {
+      "problem_set": "hard3",
+      "accuracy": 47.5,
+      "f1_score": 25.5,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00014,
+      "mean_elapsed_seconds": 18.2
+    }
+  },
+  "contributor_network_item": {
+    "cnItemId": "cn_b19bcf53b6304ab18ab7d10fd78c6149",
+    "parentCnItemId": null,
+    "rootCnItemId": "cn_b19bcf53b6304ab18ab7d10fd78c6149",
+    "shareItemId": "cn_b19bcf53b6304ab18ab7d10fd78c6149",
+    "parentShareItemId": null,
+    "rootShareItemId": "cn_b19bcf53b6304ab18ab7d10fd78c6149",
+    "competitionId": "mathematics-distillation-challenge-equational-theories-stage1",
+    "competitionTitle": "",
+    "entityType": "individual",
+    "entityId": "U-0158e64c578d5a22a8aca2330a61eda8a49fb7eb",
+    "entityName": "owen",
+    "entityAvatarUrl": "https://avatars.githubusercontent.com/u/239915274?v=4",
+    "cheatsheetTitle": "normalize-then-derive",
+    "cheatsheetContent": "You are solving a formal implication problem.\nDetermine whether Equation 1 implies Equation 2.\n\nEquation 1:\n{{ equation1 }}\n\nEquation 2:\n{{ equation2 }}\n\nMethod:\n- First restate the goal in normalized form in your own internal reasoning.\n- Compare the structure of Equation 1 and Equation 2 carefully.\n- If Equation 2 can be obtained from Equation 1 by valid rewriting or equality laws, answer `TRUE` and show the derivation.\n- If Equation 2 requires information not justified by Equation 1, answer `FALSE` and provide a concrete witness showing the gap.\n- Be strict: no unsupported verdicts.\n\nOutput rules:\n- Plain text only.\n- Use exactly the four required headings.\n- Keep `REASONING:` short and decisive.\n- Keep `PROOF:` or `COUNTEREXAMPLE:` directly tied to the two equations above.\n\nOutput:\nVERDICT: TRUE or FALSE\nREASONING: summarize the decisive normalization, derivation, or failure point\nPROOF:\nwrite a clear derivation only if VERDICT is TRUE\nCOUNTEREXAMPLE:\nwrite a concrete witness only if VERDICT is FALSE\n\nChecks:\n- `VERDICT:` must be exactly `TRUE` or `FALSE`.\n- `REASONING:` must be non-empty.\n- If `VERDICT: TRUE`, then `PROOF:` must be non-empty and `COUNTEREXAMPLE:` empty.\n- If `VERDICT: FALSE`, then `COUNTEREXAMPLE:` must be non-empty and `PROOF:` empty.",
+    "publishedAt": "2026-04-01T01:06:45Z",
+    "visibilityStatus": "active",
+    "lineageDepth": 0,
+    "lineagePathSnapshot": [
+      {
+        "cnItemId": "cn_b19bcf53b6304ab18ab7d10fd78c6149",
+        "entityName": "owen",
+        "publishedAt": "2026-04-01T01:06:45Z",
+        "shareItemId": "cn_b19bcf53b6304ab18ab7d10fd78c6149"
+      }
+    ],
+    "isDerived": false,
+    "itemType": "Original",
+    "sourceCheatsheetId": "cs_70fa08ee-a49b-4334-b69e-4faee62d2e81",
+    "publicCode": "EQT01-000002",
+    "remark": "A strict formal implication checker for equations: determine whether Equation 1 entails Equation 2 by valid rewriting alone, then return either a concise derivation or a concrete counterexample in a fixed four-section format.",
+    "likeCount": 0,
+    "favoriteCount": 1,
+    "referencedCount": 0,
+    "commentCount": 1,
+    "canComment": false,
+    "viewerHasLiked": false,
+    "viewerHasFavorited": false
+  }
+}

@@ -1,0 +1,62 @@
+<task>
+You are a strict symbolic procedure runner.
+
+You must execute the procedure exactly in order.
+</task>
+
+<input>
+EQ1 = {{ equation1 }} 
+EQ2 = {{ equation2 }} 
+</input>
+
+<procedure>
+STEP 1.
+Parse EQ1 and EQ2 as binary trees.
+- Every variable symbol is an atom.
+- Every binary operator symbol is the same generic binary operation.
+- Parentheses override grouping.
+- Otherwise read binary expressions left-associatively.
+
+STEP 2.
+Compute exactly these quantities and no others.
+
+1. eq1_var_count
+   Number of distinct variables appearing anywhere in EQ1.
+2. eq1_lhs_is_var
+   1 iff LHS(EQ1) is a single variable, else 0.
+3. eq1_rhs_distinct
+   Number of distinct variables appearing in RHS(EQ1).
+4. eq1_rhs_nodes
+   Total number of nodes in RHS(EQ1). Each variable counts 1. Each binary-operation node counts 1.
+5. delta_new_vars
+   Number of distinct variables appearing in EQ2 but not in EQ1.
+
+STEP 3.
+Apply rules using ONLY these computed values.
+Use the first matching rule.
+
+R1. if eq1_lhs_is_var > 0 and eq1_var_count <= 3 and eq1_var_count > 2 and eq1_rhs_distinct > 2 then answer = "0"
+R2. if eq1_lhs_is_var > 0 and eq1_var_count > 3 and eq1_rhs_distinct > 3 and eq1_var_count <= 4 then answer = "1"
+R3. if eq1_lhs_is_var > 0 and eq1_var_count <= 3 and eq1_var_count <= 2 and eq1_rhs_nodes > 7 then answer = "0"
+R4. if eq1_lhs_is_var > 0 and eq1_var_count > 3 and eq1_rhs_distinct <= 3 then answer = "1"
+R5. if eq1_lhs_is_var <= 0 and eq1_var_count <= 3 and eq1_var_count > 2 and eq1_rhs_distinct > 2 then answer = "0"
+R6. if eq1_lhs_is_var <= 0 and eq1_var_count <= 3 and eq1_var_count > 2 and eq1_rhs_distinct <= 2 then answer = "0"
+R7. if eq1_lhs_is_var <= 0 and eq1_var_count > 3 and eq1_rhs_nodes > 5 and eq1_rhs_distinct <= 3 then answer = "0"
+R8. if eq1_lhs_is_var <= 0 and eq1_var_count <= 3 and eq1_var_count <= 2 then answer = "0"
+R9. if eq1_lhs_is_var > 0 and eq1_var_count <= 3 and eq1_var_count > 2 and eq1_rhs_distinct <= 2 then answer = "1"
+R10. if eq1_lhs_is_var > 0 and eq1_var_count > 3 and eq1_rhs_distinct > 3 and eq1_var_count > 4 then answer = "1"
+R11. if eq1_lhs_is_var <= 0 and eq1_var_count > 3 and eq1_rhs_nodes <= 5 then answer = "0"
+R12. if eq1_lhs_is_var <= 0 and eq1_var_count > 3 and eq1_rhs_nodes > 5 and eq1_rhs_distinct > 3 then answer = "0"
+R13. if eq1_lhs_is_var > 0 and eq1_var_count <= 3 and eq1_var_count <= 2 and eq1_rhs_nodes <= 7 then answer = "0"
+
+STEP 4.
+If no rule matched, answer = "0".
+
+STEP 5.
+Do not recompute anything.
+Do not add any justification.
+Do not output JSON.
+Convert the already computed answer only:
+- if answer = "1", output exactly: VERDICT: TRUE
+- if answer = "0", output exactly: VERDICT: FALSE
+</procedure>

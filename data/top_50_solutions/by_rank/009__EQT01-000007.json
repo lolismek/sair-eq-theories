@@ -1,0 +1,65 @@
+{
+  "rank": 9,
+  "author": "Emily",
+  "title": "near-miss-detector",
+  "leaderboard_public_id": "EQT01-000007",
+  "contributor_network_public_code": "EQT01-000007",
+  "rank_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation.",
+  "metrics": {
+    "gpt_oss_120b": {
+      "problem_set": "hard3",
+      "accuracy": 52.3,
+      "f1_score": 5.9,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00019,
+      "mean_elapsed_seconds": 8.5
+    },
+    "llama_3_3_70b_instruct": {
+      "problem_set": "hard3",
+      "accuracy": 51.0,
+      "f1_score": 0.0,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00012,
+      "mean_elapsed_seconds": 10.0
+    }
+  },
+  "contributor_network_item": {
+    "cnItemId": "cn_c4dbcca67a534b9f9c737d8121326f45",
+    "parentCnItemId": null,
+    "rootCnItemId": "cn_c4dbcca67a534b9f9c737d8121326f45",
+    "shareItemId": "cn_c4dbcca67a534b9f9c737d8121326f45",
+    "parentShareItemId": null,
+    "rootShareItemId": "cn_c4dbcca67a534b9f9c737d8121326f45",
+    "competitionId": "mathematics-distillation-challenge-equational-theories-stage1",
+    "competitionTitle": "",
+    "entityType": "individual",
+    "entityId": "U-ee1c3a80890934f2e992d2f8fe94b047f642a0f1",
+    "entityName": "Emily",
+    "entityAvatarUrl": "https://avatars.githubusercontent.com/u/239919270?v=4",
+    "cheatsheetTitle": "near-miss-detector",
+    "cheatsheetContent": "You are detecting whether Equation 1 really implies Equation 2 or only almost does.\nEquation 1:\n{{ equation1 }}\nEquation 2:\n{{ equation2 }}\n\nMethod:\n- Compare the two equations carefully and identify whether Equation 2 asks for one extra condition or stronger identity than Equation 1 supplies.\n- If it is a near miss rather than a real implication, answer `FALSE` and give a witness isolating the missing part.\n- If the implication truly holds, answer `TRUE` and give a concise proof.\n- Do not promote a near miss to `TRUE`.\n\nRequired output:\nVERDICT: TRUE or FALSE\nREASONING: name the decisive extra condition or the decisive derivation\nPROOF:\nfill only when VERDICT is TRUE\nCOUNTEREXAMPLE:\nfill only when VERDICT is FALSE\n\nRules:\n- Plain text only.\n- `VERDICT:` must be exactly `TRUE` or `FALSE`.\n- `REASONING:` must not be empty.\n- If `VERDICT: TRUE`, `PROOF:` must be non-empty and `COUNTEREXAMPLE:` empty.\n- If `VERDICT: FALSE`, `COUNTEREXAMPLE:` must be non-empty and `PROOF:` empty.",
+    "publishedAt": "2026-04-01T01:20:56Z",
+    "visibilityStatus": "active",
+    "lineageDepth": 0,
+    "lineagePathSnapshot": [
+      {
+        "cnItemId": "cn_c4dbcca67a534b9f9c737d8121326f45",
+        "entityName": "Emily",
+        "publishedAt": "2026-04-01T01:20:56Z",
+        "shareItemId": "cn_c4dbcca67a534b9f9c737d8121326f45"
+      }
+    ],
+    "isDerived": false,
+    "itemType": "Original",
+    "sourceCheatsheetId": "cs_cccd60c7-8d1f-4e57-a930-d2dc3747fdb8",
+    "publicCode": "EQT01-000007",
+    "remark": "",
+    "likeCount": 0,
+    "favoriteCount": 1,
+    "referencedCount": 0,
+    "commentCount": 0,
+    "canComment": false,
+    "viewerHasLiked": false,
+    "viewerHasFavorited": false
+  }
+}

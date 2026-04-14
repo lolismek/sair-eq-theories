@@ -1,0 +1,65 @@
+{
+  "rank": 19,
+  "author": "Emily",
+  "title": "proof-skeleton-enforcer",
+  "leaderboard_public_id": "EQT01-000001",
+  "contributor_network_public_code": "EQT01-000001",
+  "rank_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation.",
+  "metrics": {
+    "gpt_oss_120b": {
+      "problem_set": "hard3",
+      "accuracy": 49.3,
+      "f1_score": 6.6,
+      "mean_parse_success": 98.0,
+      "mean_cost_usd": 0.00026,
+      "mean_elapsed_seconds": 14.1
+    },
+    "llama_3_3_70b_instruct": {
+      "problem_set": "hard3",
+      "accuracy": 50.2,
+      "f1_score": 17.4,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00013,
+      "mean_elapsed_seconds": 58.7
+    }
+  },
+  "contributor_network_item": {
+    "cnItemId": "cn_093b473d4ed940ccaeba7b2ffff8df5d",
+    "parentCnItemId": null,
+    "rootCnItemId": "cn_093b473d4ed940ccaeba7b2ffff8df5d",
+    "shareItemId": "cn_093b473d4ed940ccaeba7b2ffff8df5d",
+    "parentShareItemId": null,
+    "rootShareItemId": "cn_093b473d4ed940ccaeba7b2ffff8df5d",
+    "competitionId": "mathematics-distillation-challenge-equational-theories-stage1",
+    "competitionTitle": "",
+    "entityType": "individual",
+    "entityId": "U-ee1c3a80890934f2e992d2f8fe94b047f642a0f1",
+    "entityName": "Emily",
+    "entityAvatarUrl": "https://avatars.githubusercontent.com/u/239919270?v=4",
+    "cheatsheetTitle": "proof-skeleton-enforcer",
+    "cheatsheetContent": "Work as a formal derivation checker.\nTask:\nDecide whether Equation 1 implies Equation 2.\n\nEquation 1:\n{{ equation1 }}\n\nEquation 2:\n{{ equation2 }}\n\nProof discipline:\n- Treat Equation 1 as the only given assumption.\n- Treat Equation 2 as the exact target to be justified.\n- Do not skip hidden steps or use unstated assumptions.\n- If the target follows, give an explicit derivation.\n- If the target does not follow, give a concrete witness showing separation.\n\nOutput rules:\n- Plain text only.\n- Use exactly the four headings below.\n- Keep the reasoning short and the support section decisive.\n\nRequired output:\nVERDICT: TRUE or FALSE\nREASONING: explain why the target is derivable or why it fails\nPROOF:\nfill this only when VERDICT is TRUE\nCOUNTEREXAMPLE:\nfill this only when VERDICT is FALSE\n\nChecks:\n- `VERDICT:` must be exactly `TRUE` or `FALSE`.\n- `REASONING:` must not be empty.\n- If `VERDICT: TRUE`, `PROOF:` must be non-empty and `COUNTEREXAMPLE:` empty.\n- If `VERDICT: FALSE`, `COUNTEREXAMPLE:` must be non-empty and `PROOF:` empty.",
+    "publishedAt": "2026-04-01T01:06:44Z",
+    "visibilityStatus": "active",
+    "lineageDepth": 0,
+    "lineagePathSnapshot": [
+      {
+        "cnItemId": "cn_093b473d4ed940ccaeba7b2ffff8df5d",
+        "entityName": "Emily",
+        "publishedAt": "2026-04-01T01:06:44Z",
+        "shareItemId": "cn_093b473d4ed940ccaeba7b2ffff8df5d"
+      }
+    ],
+    "isDerived": false,
+    "itemType": "Original",
+    "sourceCheatsheetId": "cs_e688a0de-2e43-4ab8-948d-b314fc53d492",
+    "publicCode": "EQT01-000001",
+    "remark": "",
+    "likeCount": 0,
+    "favoriteCount": 1,
+    "referencedCount": 0,
+    "commentCount": 0,
+    "canComment": false,
+    "viewerHasLiked": false,
+    "viewerHasFavorited": false
+  }
+}

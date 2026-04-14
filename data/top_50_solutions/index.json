@@ -1,0 +1,252 @@
+{
+  "requested_top_n": 50,
+  "available_ranked_entries": 24,
+  "ranking_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation. No re-ranking was applied.",
+  "notes": [
+    "Some leaderboard Public IDs do not match the contributor-network public code.",
+    "When they differ, leaderboard_public_id preserves the pasted value and contributor_network_public_code is the fetch key used to retrieve the public cheatsheet.",
+    "To get the nth-best solution, open data/top_50_solutions/by_rank/{n:03d}__*.json or use tools/get_ranked_solution.py."
+  ],
+  "entries": [
+    {
+      "rank": 1,
+      "author": "Adam Betka",
+      "title": "64_hard400",
+      "leaderboard_public_id": "EQT01-000015",
+      "contributor_network_public_code": "EQT01-000015",
+      "rank_file": "by_rank/001__EQT01-000015.json",
+      "gpt_oss_120b_accuracy": 65.0,
+      "llama_3_3_70b_instruct_accuracy": 51.7
+    },
+    {
+      "rank": 2,
+      "author": "Heath",
+      "title": "distilled-rules-1",
+      "leaderboard_public_id": "EQT01-000017",
+      "contributor_network_public_code": "EQT01-000017",
+      "rank_file": "by_rank/002__EQT01-000017.json",
+      "gpt_oss_120b_accuracy": 58.0,
+      "llama_3_3_70b_instruct_accuracy": 55.8
+    },
+    {
+      "rank": 3,
+      "author": "Arjun Garg",
+      "title": "bank_lookup_v5",
+      "leaderboard_public_id": "EQT010003",
+      "contributor_network_public_code": "EQT01-000037",
+      "rank_file": "by_rank/003__EQT01-000037.json",
+      "gpt_oss_120b_accuracy": 60.8,
+      "llama_3_3_70b_instruct_accuracy": 47.0
+    },
+    {
+      "rank": 4,
+      "author": "AMEY",
+      "title": "Mathematics Distillation Challenge",
+      "leaderboard_public_id": "EQT01-000009",
+      "contributor_network_public_code": "EQT01-000009",
+      "rank_file": "by_rank/004__EQT01-000009.json",
+      "gpt_oss_120b_accuracy": 56.3,
+      "llama_3_3_70b_instruct_accuracy": 51.5
+    },
+    {
+      "rank": 5,
+      "author": "Adam Betka",
+      "title": "98_hard200",
+      "leaderboard_public_id": "EQT01-000014",
+      "contributor_network_public_code": "EQT01-000014",
+      "rank_file": "by_rank/005__EQT01-000014.json",
+      "gpt_oss_120b_accuracy": 56.3,
+      "llama_3_3_70b_instruct_accuracy": 51.0
+    },
+    {
+      "rank": 6,
+      "author": "haha8888haha8888",
+      "title": "Zeta999oldfffZPY Zer00logy/Zero-ology Zeropythfon",
+      "leaderboard_public_id": "EQT01-000020",
+      "contributor_network_public_code": "EQT01-000020",
+      "rank_file": "by_rank/006__EQT01-000020.json",
+      "gpt_oss_120b_accuracy": 57.3,
+      "llama_3_3_70b_instruct_accuracy": 50.0
+    },
+    {
+      "rank": 7,
+      "author": "dd",
+      "title": "liyeen",
+      "leaderboard_public_id": "EQT01-000006",
+      "contributor_network_public_code": "EQT01-000006",
+      "rank_file": "by_rank/007__EQT01-000006.json",
+      "gpt_oss_120b_accuracy": 55.0,
+      "llama_3_3_70b_instruct_accuracy": 51.2
+    },
+    {
+      "rank": 8,
+      "author": "SimonRJ",
+      "title": "Stage 1 Prompt - Simon Watts",
+      "leaderboard_public_id": "EQT01-000027",
+      "contributor_network_public_code": "EQT01-000027",
+      "rank_file": "by_rank/008__EQT01-000027.json",
+      "gpt_oss_120b_accuracy": 58.3,
+      "llama_3_3_70b_instruct_accuracy": 46.3
+    },
+    {
+      "rank": 9,
+      "author": "Emily",
+      "title": "near-miss-detector",
+      "leaderboard_public_id": "EQT01-000007",
+      "contributor_network_public_code": "EQT01-000007",
+      "rank_file": "by_rank/009__EQT01-000007.json",
+      "gpt_oss_120b_accuracy": 52.3,
+      "llama_3_3_70b_instruct_accuracy": 51.0
+    },
+    {
+      "rank": 10,
+      "author": "Adam Betka",
+      "title": "99_hard69",
+      "leaderboard_public_id": "EQT01-000013",
+      "contributor_network_public_code": "EQT01-000013",
+      "rank_file": "by_rank/010__EQT01-000013.json",
+      "gpt_oss_120b_accuracy": 50.2,
+      "llama_3_3_70b_instruct_accuracy": 52.5
+    },
+    {
+      "rank": 11,
+      "author": "Tom Chan",
+      "title": "v1.05",
+      "leaderboard_public_id": "EQT01-000028",
+      "contributor_network_public_code": "EQT01-000028",
+      "rank_file": "by_rank/011__EQT01-000028.json",
+      "gpt_oss_120b_accuracy": 53.0,
+      "llama_3_3_70b_instruct_accuracy": 49.3
+    },
+    {
+      "rank": 12,
+      "author": "Shailesh P",
+      "title": "TEST3.5 V+",
+      "leaderboard_public_id": "EQT01-000008",
+      "contributor_network_public_code": "EQT01-000008",
+      "rank_file": "by_rank/012__EQT01-000008.json",
+      "gpt_oss_120b_accuracy": 51.5,
+      "llama_3_3_70b_instruct_accuracy": 50.2
+    },
+    {
+      "rank": 13,
+      "author": "owen",
+      "title": "one-way-implication-guard",
+      "leaderboard_public_id": "EQT01-000003",
+      "contributor_network_public_code": "EQT01-000003",
+      "rank_file": "by_rank/013__EQT01-000003.json",
+      "gpt_oss_120b_accuracy": 51.2,
+      "llama_3_3_70b_instruct_accuracy": 50.0
+    },
+    {
+      "rank": 14,
+      "author": "Jiaxuan Zou",
+      "title": "3.15",
+      "leaderboard_public_id": "EQT01-000012",
+      "contributor_network_public_code": "EQT01-000012",
+      "rank_file": "by_rank/014__EQT01-000012.json",
+      "gpt_oss_120b_accuracy": 49.8,
+      "llama_3_3_70b_instruct_accuracy": 50.7
+    },
+    {
+      "rank": 15,
+      "author": "Jun B",
+      "title": "Pre 1_edit4",
+      "leaderboard_public_id": "EQT01-000022",
+      "contributor_network_public_code": "EQT01-000022",
+      "rank_file": "by_rank/015__EQT01-000022.json",
+      "gpt_oss_120b_accuracy": 49.0,
+      "llama_3_3_70b_instruct_accuracy": 51.2
+    },
+    {
+      "rank": 16,
+      "author": "Reza Jamei",
+      "title": "three-element-focus",
+      "leaderboard_public_id": "EQT01-000021",
+      "contributor_network_public_code": "EQT01-000021",
+      "rank_file": "by_rank/016__EQT01-000021.json",
+      "gpt_oss_120b_accuracy": 55.8,
+      "llama_3_3_70b_instruct_accuracy": 44.3
+    },
+    {
+      "rank": 17,
+      "author": "owen",
+      "title": "normalize-then-derive",
+      "leaderboard_public_id": "EQT01-000002",
+      "contributor_network_public_code": "EQT01-000002",
+      "rank_file": "by_rank/017__EQT01-000002.json",
+      "gpt_oss_120b_accuracy": 52.3,
+      "llama_3_3_70b_instruct_accuracy": 47.5
+    },
+    {
+      "rank": 18,
+      "author": "Emily",
+      "title": "syntax-then-semantics",
+      "leaderboard_public_id": "EQT01-000004",
+      "contributor_network_public_code": "EQT01-000004",
+      "rank_file": "by_rank/018__EQT01-000004.json",
+      "gpt_oss_120b_accuracy": 49.8,
+      "llama_3_3_70b_instruct_accuracy": 49.8
+    },
+    {
+      "rank": 19,
+      "author": "Emily",
+      "title": "proof-skeleton-enforcer",
+      "leaderboard_public_id": "EQT01-000001",
+      "contributor_network_public_code": "EQT01-000001",
+      "rank_file": "by_rank/019__EQT01-000001.json",
+      "gpt_oss_120b_accuracy": 49.3,
+      "llama_3_3_70b_instruct_accuracy": 50.2
+    },
+    {
+      "rank": 20,
+      "author": "Sven Benson",
+      "title": "IR3",
+      "leaderboard_public_id": "EQT010001",
+      "contributor_network_public_code": "EQT01-000035",
+      "rank_file": "by_rank/020__EQT01-000035.json",
+      "gpt_oss_120b_accuracy": 48.8,
+      "llama_3_3_70b_instruct_accuracy": 50.2
+    },
+    {
+      "rank": 21,
+      "author": "Hao Oy",
+      "title": "List of collapse equation...",
+      "leaderboard_public_id": "EQT01-000029",
+      "contributor_network_public_code": "EQT01-000029",
+      "rank_file": "by_rank/021__EQT01-000029.json",
+      "gpt_oss_120b_accuracy": 47.3,
+      "llama_3_3_70b_instruct_accuracy": 51.5
+    },
+    {
+      "rank": 22,
+      "author": "haha8888haha8888",
+      "title": "ZPY v3.9.4 Zer00logy/Zero-Ology Ternary 6GemLogic",
+      "leaderboard_public_id": "EQT01-000032",
+      "contributor_network_public_code": "EQT01-000032",
+      "rank_file": "by_rank/022__EQT01-000032.json",
+      "gpt_oss_120b_accuracy": 51.2,
+      "llama_3_3_70b_instruct_accuracy": 47.3
+    },
+    {
+      "rank": 23,
+      "author": "omegaestable",
+      "title": "v23c",
+      "leaderboard_public_id": "EQT01-000033",
+      "contributor_network_public_code": "EQT01-000033",
+      "rank_file": "by_rank/023__EQT01-000033.json",
+      "gpt_oss_120b_accuracy": 48.3,
+      "llama_3_3_70b_instruct_accuracy": 49.5
+    },
+    {
+      "rank": 24,
+      "author": "Dixing Xu",
+      "title": "test2",
+      "leaderboard_public_id": "EQT01-000026",
+      "contributor_network_public_code": "EQT01-000026",
+      "rank_file": "by_rank/024__EQT01-000026.json",
+      "gpt_oss_120b_accuracy": 48.8,
+      "llama_3_3_70b_instruct_accuracy": 36.3
+    }
+  ]
+}

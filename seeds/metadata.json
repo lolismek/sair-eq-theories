@@ -1,0 +1,62 @@
+{
+  "description": "Four diverse seed prompts for evolutionary search over Stage 1 SAIR equational-theories prompts.",
+  "selection_policy": "Chosen manually from the ranked leaderboard bundle for diversity of strategy rather than just score.",
+  "seeds": [
+    {
+      "seed_id": "seed_01_heath_compact_classifier",
+      "role": "classifier_compact",
+      "notes": "Small procedure-runner classifier with a tiny feature set and hard routing rules.",
+      "prompt_file": "01_heath_distilled-rules-1.txt",
+      "source_rank": 2,
+      "author": "Heath",
+      "title": "distilled-rules-1",
+      "leaderboard_public_id": "EQT01-000017",
+      "contributor_network_public_code": "EQT01-000017",
+      "source_json": "data/top_50_solutions/by_rank/002__EQT01-000017.json",
+      "gpt_oss_120b_accuracy": 58.0,
+      "llama_3_3_70b_instruct_accuracy": 55.8
+    },
+    {
+      "seed_id": "seed_02_arjun_witness_bank",
+      "role": "witness_bank",
+      "notes": "Witness-model heavy seed using projection, XOR, cycle, spike-zero, and negation magmas.",
+      "prompt_file": "02_arjun_bank_lookup_v5.txt",
+      "source_rank": 3,
+      "author": "Arjun Garg",
+      "title": "bank_lookup_v5",
+      "leaderboard_public_id": "EQT010003",
+      "contributor_network_public_code": "EQT01-000037",
+      "source_json": "data/top_50_solutions/by_rank/003__EQT01-000037.json",
+      "gpt_oss_120b_accuracy": 60.8,
+      "llama_3_3_70b_instruct_accuracy": 47.0
+    },
+    {
+      "seed_id": "seed_03_jiaxuan_formal_prover",
+      "role": "formal_prover",
+      "notes": "Formal derivation and verified-counterexample discipline with minimal heuristic routing.",
+      "prompt_file": "03_jiaxuan_3.15.txt",
+      "source_rank": 14,
+      "author": "Jiaxuan Zou",
+      "title": "3.15",
+      "leaderboard_public_id": "EQT01-000012",
+      "contributor_network_public_code": "EQT01-000012",
+      "source_json": "data/top_50_solutions/by_rank/014__EQT01-000012.json",
+      "gpt_oss_120b_accuracy": 49.8,
+      "llama_3_3_70b_instruct_accuracy": 50.7
+    },
+    {
+      "seed_id": "seed_04_adam_rich_classifier",
+      "role": "classifier_rich",
+      "notes": "Rich feature-bucket classifier with many hand-tuned structural rules.",
+      "prompt_file": "04_adam_64_hard400.txt",
+      "source_rank": 1,
+      "author": "Adam Betka",
+      "title": "64_hard400",
+      "leaderboard_public_id": "EQT01-000015",
+      "contributor_network_public_code": "EQT01-000015",
+      "source_json": "data/top_50_solutions/by_rank/001__EQT01-000015.json",
+      "gpt_oss_120b_accuracy": 65.0,
+      "llama_3_3_70b_instruct_accuracy": 51.7
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "rank": 7,
+  "author": "dd",
+  "title": "liyeen",
+  "leaderboard_public_id": "EQT01-000006",
+  "contributor_network_public_code": "EQT01-000006",
+  "rank_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation.",
+  "metrics": {
+    "gpt_oss_120b": {
+      "problem_set": "hard3",
+      "accuracy": 55.0,
+      "f1_score": 65.9,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00029,
+      "mean_elapsed_seconds": 13.2
+    },
+    "llama_3_3_70b_instruct": {
+      "problem_set": "hard3",
+      "accuracy": 51.2,
+      "f1_score": 0.0,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00025,
+      "mean_elapsed_seconds": 36.9
+    }
+  },
+  "contributor_network_item": {
+    "cnItemId": "cn_650b1cddcd2a4e45b5f2f01cf5d11acc",
+    "parentCnItemId": null,
+    "rootCnItemId": "cn_650b1cddcd2a4e45b5f2f01cf5d11acc",
+    "shareItemId": "cn_650b1cddcd2a4e45b5f2f01cf5d11acc",
+    "parentShareItemId": null,
+    "rootShareItemId": "cn_650b1cddcd2a4e45b5f2f01cf5d11acc",
+    "competitionId": "mathematics-distillation-challenge-equational-theories-stage1",
+    "competitionTitle": "",
+    "entityType": "individual",
+    "entityId": "U-79e62a1a4d6f322c2ff3d0960e5c01cbe884f672",
+    "entityName": "dd",
+    "entityAvatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocIJFuwcb5hzR0vGfC7wUMcsXhDxJ_ZnREAqnALgJqht7K0T8w=s96-c",
+    "cheatsheetTitle": "liyeen",
+    "cheatsheetContent": "You are a mathematician specializing in equational theories of magmas. \nYour task is to determine whether Equation 1 ({{ equation1 }}) implies Equation 2 ({{ equation2 }}) over all magmas.\n---\n## CHEAT SHEET: FAST DECISION FILTERS\n\nTask: decide whether Eq1 implies Eq2 over all magmas.\n\nImmediate TRUE checks:\n- Eq2 tautology: L2 == R2.\n- Eq2 is Eq1 up to variable renaming or side swap.\n- Eq1 has very strong collapse/projection behavior forcing trivial structure.\n\nImmediate FALSE check:\n- If any finite magma satisfies Eq1 and violates Eq2, output FALSE immediately.\n\nDecision rule:\n- A verified counterexample is decisive.\n- If no quick filter resolves it, continue with full proof/counterexample workflow.\n---\nOutput format (use exact headers without any additional text or formatting):\nVERDICT: must be exactly TRUE or FALSE (in the same line).\nREASONING: must be non-empty.\nPROOF: required if VERDICT is TRUE, empty otherwise.\nCOUNTEREXAMPLE: required if VERDICT is FALSE, empty otherwise.",
+    "publishedAt": "2026-04-01T01:17:33Z",
+    "visibilityStatus": "active",
+    "lineageDepth": 0,
+    "lineagePathSnapshot": [
+      {
+        "cnItemId": "cn_650b1cddcd2a4e45b5f2f01cf5d11acc",
+        "entityName": "dd",
+        "publishedAt": "2026-04-01T01:17:33Z",
+        "shareItemId": "cn_650b1cddcd2a4e45b5f2f01cf5d11acc"
+      }
+    ],
+    "isDerived": false,
+    "itemType": "Original",
+    "sourceCheatsheetId": "cs_7914afbe-0178-4f79-9c51-8b72f61db3df",
+    "publicCode": "EQT01-000006",
+    "remark": "",
+    "likeCount": 0,
+    "favoriteCount": 0,
+    "referencedCount": 0,
+    "commentCount": 0,
+    "canComment": false,
+    "viewerHasLiked": false,
+    "viewerHasFavorited": false
+  }
+}

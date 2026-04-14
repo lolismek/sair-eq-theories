@@ -1,0 +1,65 @@
+{
+  "rank": 13,
+  "author": "owen",
+  "title": "one-way-implication-guard",
+  "leaderboard_public_id": "EQT01-000003",
+  "contributor_network_public_code": "EQT01-000003",
+  "rank_source": "Exact user-pasted leaderboard order from 2026-04-14 conversation.",
+  "metrics": {
+    "gpt_oss_120b": {
+      "problem_set": "hard3",
+      "accuracy": 51.2,
+      "f1_score": 3.9,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00019,
+      "mean_elapsed_seconds": 8.1
+    },
+    "llama_3_3_70b_instruct": {
+      "problem_set": "hard3",
+      "accuracy": 50.0,
+      "f1_score": 6.5,
+      "mean_parse_success": 100.0,
+      "mean_cost_usd": 0.00015,
+      "mean_elapsed_seconds": 22.9
+    }
+  },
+  "contributor_network_item": {
+    "cnItemId": "cn_349a31b56940496a937b9f8fe2ffbe8e",
+    "parentCnItemId": null,
+    "rootCnItemId": "cn_349a31b56940496a937b9f8fe2ffbe8e",
+    "shareItemId": "cn_349a31b56940496a937b9f8fe2ffbe8e",
+    "parentShareItemId": null,
+    "rootShareItemId": "cn_349a31b56940496a937b9f8fe2ffbe8e",
+    "competitionId": "mathematics-distillation-challenge-equational-theories-stage1",
+    "competitionTitle": "",
+    "entityType": "individual",
+    "entityId": "U-0158e64c578d5a22a8aca2330a61eda8a49fb7eb",
+    "entityName": "owen",
+    "entityAvatarUrl": "https://avatars.githubusercontent.com/u/239915274?v=4",
+    "cheatsheetTitle": "one-way-implication-guard",
+    "cheatsheetContent": "You are checking a one-direction implication only.\nDo not confuse equivalence with implication.\nEquation 1:\n{{ equation1 }}\nEquation 2:\n{{ equation2 }}\nDecision policy:\n- The question is whether Equation 1 implies Equation 2, not whether the two equations look similar.\n- Even if Equation 2 could imply Equation 1, the correct verdict is still `FALSE` unless Equation 1 implies Equation 2.\n- If the implication holds, provide a direct proof.\n- If it fails, provide a concrete counterexample or interpretation.\nRequired response:\nVERDICT: TRUE or FALSE\nREASONING: explain the one-way logic clearly and briefly\nPROOF:\nfill only when VERDICT is TRUE\nCOUNTEREXAMPLE:\nfill only when VERDICT is FALSE\n\nStrict format:\n- Plain text only.\n- `VERDICT:` must be exactly `TRUE` or `FALSE`.\n- `REASONING:` must not be empty.\n- Only one of `PROOF:` or `COUNTEREXAMPLE:` may be non-empty.",
+    "publishedAt": "2026-04-01T01:09:53Z",
+    "visibilityStatus": "active",
+    "lineageDepth": 0,
+    "lineagePathSnapshot": [
+      {
+        "cnItemId": "cn_349a31b56940496a937b9f8fe2ffbe8e",
+        "entityName": "owen",
+        "publishedAt": "2026-04-01T01:09:53Z",
+        "shareItemId": "cn_349a31b56940496a937b9f8fe2ffbe8e"
+      }
+    ],
+    "isDerived": false,
+    "itemType": "Original",
+    "sourceCheatsheetId": "cs_09a869e8-88b4-459f-b48f-7a8175946a28",
+    "publicCode": "EQT01-000003",
+    "remark": "A one-way implication evaluator for equations that strictly separates implication from equivalence, deciding only whether Equation 1 entails Equation 2 and returning either a direct proof or a concrete counterexample in a fixed response format.",
+    "likeCount": 0,
+    "favoriteCount": 2,
+    "referencedCount": 0,
+    "commentCount": 0,
+    "canComment": false,
+    "viewerHasLiked": false,
+    "viewerHasFavorited": false
+  }
+}

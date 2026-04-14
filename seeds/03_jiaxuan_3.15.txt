@@ -1,0 +1,262 @@
+You are deciding whether Equation 1 universally implies Equation 2 over all magmas.
+
+Foundational semantics
+
+A magma is a nonempty set equipped with one binary operation \( * \).
+
+For any equation \( s=t \), the notation
+\[
+M \models s=t
+\]
+means that for every valuation of all variables into \( M \), the terms \( s \) and \( t \) evaluate to the same element.
+
+Your task is to determine whether
+\[
+\forall M\,(M \models E1 \Rightarrow M \models E2).
+\]
+
+This statement is TRUE exactly when every magma satisfying \( E1 \) also satisfies \( E2 \).
+It is FALSE exactly when there exists at least one magma \( M \) such that
+\[
+M \models E1 \quad\text{and}\quad M \not\models E2.
+\]
+
+Verdict discipline
+
+You must not announce the final verdict before the derivation is complete.
+Do not write TRUE, FALSE, “E1 implies E2”, “E1 does not imply E2”, or any equivalent statement anywhere before the final section.
+
+You are not allowed to guess a verdict.
+A verdict is permitted only if one of the following has been completed:
+
+1. A formal derivation that in an arbitrary magma \( M \), the assumption \( M \models E1 \) implies \( M \models E2 \).
+2. A fully verified counterexample magma \( M \) with
+   \[
+   M \models E1 \quad\text{and}\quad M \not\models E2.
+   \]
+
+If neither has been completed, continue reasoning. Do not output a verdict.
+
+Permitted reasoning moves
+
+You may use only the following mathematically valid moves.
+
+1. Universal instantiation.
+If \( E1 \) is an identity, then you may substitute its variables by arbitrary elements, by other variables, or by repeated variables.
+
+2. Fix-and-vary argument.
+If an identity holds for all values of some variable, then after fixing the other variables you may compare two arbitrary values of that variable and conclude independence from that variable.
+
+Template:
+if
+\[
+A = B(u) \quad \text{for all } u,
+\]
+then for any \( u_1,u_2 \),
+\[
+B(u_1)=A=B(u_2),
+\]
+hence \( B(u) \) is independent of \( u \).
+
+3. Equality chaining.
+If two expressions are both equal to the same expression under the same hypotheses, then they are equal to each other.
+
+4. Re-specialization.
+After deriving an intermediate identity, you may specialize it again and substitute it back into earlier identities.
+
+5. Direct finite verification.
+For a finite magma from the library, you may verify identities by explicit computation from the Cayley table.
+
+Strictly forbidden moves
+
+1. Do not use any heuristic rule unless it is formally justified in the current derivation.
+In particular, do not assume any general rule of the form:
+- disjoint variable sets imply a constant operation;
+- nonempty variable intersection implies no useful consequence;
+- an equation “looks like” projection, associativity, commutativity, idempotence, cancellation, or constancy.
+
+2. Do not use a single successful assignment to claim that \( E1 \) holds in a magma.
+To prove \( M \models E1 \), you must establish universal validity of \( E1 \) in that magma.
+
+3. Do not use a magma with \( M \not\models E1 \) as a counterexample to implication.
+
+4. Do not appeal to labels such as “XOR”, “projection”, “group”, “max”, “constant”, or similar names as proof.
+Those labels are only search hints.
+
+5. Do not insert unproved algebraic laws such as associativity or commutativity.
+They may be used only if they have been formally derived from \( E1 \) or explicitly verified from a finite table.
+
+6. Do not use vague stopping language such as:
+- “this seems difficult”,
+- “this suggests”,
+- “this appears to indicate”,
+- “we may need associativity”,
+- “without additional assumptions”,
+- “it is plausible that”.
+Every nontrivial statement must be justified by a derivation step or a table computation.
+
+7. Do not skip steps.
+Every nontrivial equality must come from:
+- an explicit instance of \( E1 \),
+- a previously derived identity,
+- equality transitivity,
+- or direct table lookup.
+
+High-value exact lemmas
+
+Lemma A. Variable-free right side.
+If an identity has the form
+\[
+x = T(\bar y)
+\]
+where \( x \) does not occur in \( T \), then every magma satisfying this identity is a one-element magma.
+
+Reason:
+after fixing \( \bar y \), the right side is a fixed element \( c \), so the identity says \( x=c \) for every value of \( x \). Hence all elements are equal.
+
+Lemma B. Basic-product to foreign-term constancy.
+If an identity has the form
+\[
+x*y = T(\bar z)
+\]
+where neither \( x \) nor \( y \) occurs in \( T \), then every magma satisfying this identity has a constant operation:
+there exists \( c \) such that
+\[
+a*b=c \qquad \forall a,b.
+\]
+
+Reason:
+for any \( a,b,a',b' \), choose the same values of \( \bar z \); then
+\[
+a*b = T(\bar z)=a'*b'.
+\]
+So all products are equal to one common element.
+
+Lemma C. Independence extraction.
+If
+\[
+S(\bar a,\bar b)=T(\bar b,\bar c)
+\]
+holds identically, then after fixing \( \bar b \),
+- the left side is independent of \( \bar c \),
+- the right side is independent of \( \bar a \).
+
+Do not stop at saying “independent”.
+Continue until you derive a concrete consequence such as a constant row, a constant column, a common value, or collapse to a one-element magma.
+
+Lemma D. Constant row / constant column.
+If you derive
+\[
+p * u = q \quad \text{for all } u,
+\]
+then the row of \( p \) is constant with value \( q \).
+
+If you derive
+\[
+u * p = q \quad \text{for all } u,
+\]
+then the column of \( p \) is constant with value \( q \).
+
+These are intermediate consequences, not automatically final conclusions.
+
+Required reasoning workflow
+
+Phase 1. Exact parsing.
+- Rewrite \( E1 \) and \( E2 \) in fully parenthesized form if needed.
+- List the variables occurring on the left-hand side and right-hand side of \( E1 \).
+- List the variables occurring on the left-hand side and right-hand side of \( E2 \).
+- This step is only syntactic bookkeeping. Do not infer algebraic properties from variable occurrence alone.
+
+Phase 2. Consequences of \( E1 \) only.
+Assume \( M \models E1 \) for an arbitrary magma \( M \).
+Work only from \( E1 \).
+Extract consequences by universal instantiation, fix-and-vary, equality chaining, and re-specialization.
+Each consequence must be stated explicitly as a claim and justified immediately.
+
+Phase 3. Derivation target.
+Try to derive \( E2 \) inside the arbitrary magma satisfying \( E1 \).
+If the consequences force the magma to be one-element, say so explicitly and conclude that \( E2 \) holds automatically.
+If the consequences force the operation to be constant, substitute that into \( E2 \) explicitly and evaluate both sides.
+Otherwise continue until the two sides of \( E2 \) are shown equal.
+
+Phase 4. Counterexample search only if Phase 3 fails.
+To refute implication, you must produce a magma \( M \) such that
+\[
+M \models E1 \quad\text{and}\quad M \not\models E2.
+\]
+
+For any candidate finite magma, the burden of proof is:
+- first verify \( E1 \) globally in that magma;
+- then give one explicit assignment witnessing failure of \( E2 \).
+
+A single assignment may disprove \( M \models E2 \), but it never proves \( M \models E1 \).
+
+Finite magma library usage
+
+If you use a magma from the library, interpret it exactly as follows:
+a string \( S \) of length \( n^2 \) defines a magma on \( \{0,\dots,n-1\} \) by
+\[
+i*j = S[i n + j].
+\]
+
+When verifying an identity in a finite magma, compute from this rule or from the Cayley table explicitly.
+Do not cite the library label as proof.
+
+Required output format
+
+Your response must use exactly the following section order.
+
+ANALYSIS
+
+In this section, give the full derivation before any final answer appears.
+
+Within ANALYSIS, structure the reasoning as a sequence of numbered claims.
+
+Use the following pattern repeatedly:
+
+Claim 1.
+\( \ldots \)
+
+Justification.
+\( \ldots \)
+
+Claim 2.
+\( \ldots \)
+
+Justification.
+\( \ldots \)
+
+Continue until either:
+- \( E2 \) has been derived from \( E1 \), or
+- a fully verified counterexample has been established.
+
+If a counterexample is found, include inside ANALYSIS:
+- the magma ID,
+- its Cayley table,
+- a verification that \( E1 \) holds for all assignments in that magma,
+- one explicit assignment where \( E2 \) fails.
+
+FINAL CONCLUSION
+
+This must be the last section of the response.
+
+Write exactly one of:
+\[
+\text{TRUE}
+\]
+or
+\[
+\text{FALSE}
+\]
+
+Then immediately give one short paragraph:
+
+- If the verdict is TRUE, summarize the key formal derivation proving that every magma satisfying \( E1 \) also satisfies \( E2 \).
+- If the verdict is FALSE, summarize the verified counterexample \( M \models E1 \) and \( M \not\models E2 \).
+
+Mandatory self-check before finishing
+
+Before writing FALSE, confirm that you have actually proved \( M \models E1 \) for the chosen magma.
+Before writing TRUE, confirm that every property used in the proof was formally derived from \( E1 \) or explicitly verified.
+Before writing FINAL CONCLUSION, confirm that no verdict was announced earlier.
+If these checks fail, continue the derivation instead of concluding.
